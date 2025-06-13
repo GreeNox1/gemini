@@ -26,8 +26,8 @@ const ColorScheme lightColorScheme = ColorScheme(
   primaryFixedDim: Color(0xff6A6A8B), // light text
   onPrimaryFixed: Color(0xff010104), // dark text
   onPrimaryFixedVariant: Color(0xff200E32), // dark icon
-  secondary: Color(0xffF77A55), // secondary container background
-  onSecondary: Color(0xffffffff), // secondary container text
+  secondary: Color(0xfff87003), // secondary container background
+  onSecondary: Color(0xfcf6911e), // secondary container
   secondaryContainer: Color(0xffF5F5FA),
   onSecondaryContainer: Color(0xff000000),
   secondaryFixed: Color(0xfffbd7c6),

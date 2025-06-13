@@ -1,14 +1,14 @@
-import 'package:udevs/src/features/home/data/home_repository.dart';
+import 'package:udevs/src/features/gemini_ai/data/gemini_ai_repository.dart';
 
 class AppDependencies {
   AppDependencies({
     this.locale = "en",
     this.theme = true,
-    required this.homeRepository,
+    required this.geminiAiRepository,
   });
 
   String locale;
   bool theme;
 
-  final IHomeRepository homeRepository;
+  final IGeminiAiRepository geminiAiRepository;
 }

@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:udevs/src/common/style/app_theme.dart';
 import 'package:udevs/src/common/utils/extension/context_extension.dart';
-import 'package:udevs/src/features/home/screen/home_screen.dart';
+import 'package:udevs/src/features/home/screens/home_screen.dart';
 
-import '../../features/home/bloc/message_bloc.dart';
 import '../l10n/generated/l10n.dart';
 
 class App extends StatelessWidget {
@@ -25,12 +23,13 @@ class App extends StatelessWidget {
       ],
       supportedLocales: const [Locale("en")],
       locale: Locale(context.dependency.locale),
-      home: BlocProvider(
-        create: (BuildContext context) {
-          return HomeBloc(homeRepository: context.dependency.homeRepository);
-        },
-        child: const HomeScreen(),
-      ),
+      // home: BlocProvider(
+      //   create: (BuildContext context) {
+      //     return GeminiAiBloc(homeRepository: context.dependency.geminiAiRepository);
+      //   },
+      //   child: const GeminiAiScreen(),
+      // ),
+      home: HomeScreen(),
     );
   }
 }

@@ -74,6 +74,26 @@ class S {
       args: [],
     );
   }
+
+  /// `Ask anything`
+  String get ask_anything {
+    return Intl.message(
+      'Ask anything',
+      name: 'ask_anything',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Gemini`
+  String get gemini {
+    return Intl.message('Gemini', name: 'gemini', desc: '', args: []);
+  }
+
+  /// `You`
+  String get you {
+    return Intl.message('You', name: 'you', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

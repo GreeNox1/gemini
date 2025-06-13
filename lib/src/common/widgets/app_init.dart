@@ -5,7 +5,7 @@ import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:udevs/src/common/constants/constants.dart';
 import 'package:udevs/src/common/dependency/app_dependencies.dart';
 import 'package:udevs/src/common/service/api_service.dart';
-import 'package:udevs/src/features/home/data/home_repository.dart';
+import 'package:udevs/src/features/gemini_ai/data/gemini_ai_repository.dart';
 
 class InitializeApp {
   const InitializeApp._();
@@ -30,10 +30,10 @@ class InitializeApp {
 
     final apiService = ApiService(dio: dio);
 
-    final IHomeRepository homeRepository = HomeRepositoryImpl(
+    final IGeminiAiRepository geminiAiRepository = GeminiAiRepositoryImpl(
       apiService: apiService,
     );
 
-    return AppDependencies(homeRepository: homeRepository);
+    return AppDependencies(geminiAiRepository: geminiAiRepository);
   }
 }

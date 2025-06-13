@@ -30,6 +30,9 @@ dependencies:
   flutter_bloc: ^9.1.1
   provider: ^6.1.5
 
+  # text to voice
+  flutter_tts: ^4.2.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
