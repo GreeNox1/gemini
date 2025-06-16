@@ -13,7 +13,11 @@ class InitializeApp {
   static Future<AppDependencies> initialize() async {
     WidgetsFlutterBinding.ensureInitialized();
 
-    await SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+    await SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
 
     Gemini.init(apiKey: AppConstants.apiKey);
 

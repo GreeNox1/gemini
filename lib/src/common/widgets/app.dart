@@ -23,12 +23,6 @@ class App extends StatelessWidget {
       ],
       supportedLocales: const [Locale("en")],
       locale: Locale(context.dependency.locale),
-      // home: BlocProvider(
-      //   create: (BuildContext context) {
-      //     return GeminiAiBloc(homeRepository: context.dependency.geminiAiRepository);
-      //   },
-      //   child: const GeminiAiScreen(),
-      // ),
       home: HomeScreen(),
     );
   }

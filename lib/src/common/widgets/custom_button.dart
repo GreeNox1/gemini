@@ -30,6 +30,7 @@ class _CustomButtonState extends State<CustomButton> {
       padding: AppSize.paddingAll10,
       child: GestureDetector(
         onTap: widget.onPressed,
+        onTapMove: (details) => onChanged(newSelected: false),
         onLongPress: onChanged,
         onLongPressStart: (details) => onChanged(),
         onLongPressUp: isSelected ? widget.onPressed : null,
