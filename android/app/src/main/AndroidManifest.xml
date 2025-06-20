@@ -1,5 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <uses-permission android:name="android.permission.INTERNET" /> <!-- Internet -->
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- Write Storage -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- Read Storage -->
+    <uses-permission android:name="android.permission.MANAGE_EXTERNAL_STORAGE" /> <!-- Manage Storage -->
     <application
         android:label="udevs"
         android:name="${applicationName}"

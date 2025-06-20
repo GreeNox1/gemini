@@ -94,6 +94,21 @@ class S {
   String get you {
     return Intl.message('You', name: 'you', desc: '', args: []);
   }
+
+  /// `Video Player`
+  String get video_player {
+    return Intl.message(
+      'Video Player',
+      name: 'video_player',
+      desc: '',
+      args: [],
+    );
+  }
+
+  /// `Folders`
+  String get folders {
+    return Intl.message('Folders', name: 'folders', desc: '', args: []);
+  }
 }
 
 class AppLocalizationDelegate extends LocalizationsDelegate<S> {

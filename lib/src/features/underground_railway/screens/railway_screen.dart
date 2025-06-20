@@ -5,14 +5,15 @@ import 'package:udevs/src/features/underground_railway/controller/railway_contro
 import 'package:udevs/src/features/underground_railway/widgets/railway_button.dart';
 import 'package:video_player/video_player.dart';
 
-class UndergroundRailway extends StatefulWidget {
-  const UndergroundRailway({super.key});
+class UndergroundRailwayScreen extends StatefulWidget {
+  const UndergroundRailwayScreen({super.key});
 
   @override
-  State<UndergroundRailway> createState() => _UndergroundRailwayState();
+  State<UndergroundRailwayScreen> createState() =>
+      _UndergroundRailwayScreenState();
 }
 
-class _UndergroundRailwayState extends State<UndergroundRailway>
+class _UndergroundRailwayScreenState extends State<UndergroundRailwayScreen>
     with RailwayController {
   @override
   Widget build(BuildContext context) {

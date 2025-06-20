@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 class AppSize {
   const AppSize._();
 
+  static const EdgeInsets paddingAll2 = EdgeInsets.all(2);
+  static const EdgeInsets paddingAll4 = EdgeInsets.all(4);
   static const EdgeInsets paddingAll10 = EdgeInsets.all(10);
   static const EdgeInsets paddingAll20 = EdgeInsets.all(20);
 
@@ -15,6 +17,9 @@ class AppSize {
     horizontal: 10,
   );
 
+  static const BorderRadius borderRadiusAll5 = BorderRadius.all(
+    Radius.circular(5),
+  );
   static const BorderRadius borderRadiusAll15 = BorderRadius.all(
     Radius.circular(15),
   );

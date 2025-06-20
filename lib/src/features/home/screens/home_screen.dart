@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:udevs/src/common/utils/extension/context_extension.dart';
-import 'package:udevs/src/features/home/screens/second_screen.dart';
 
 import '../../../common/router/app_router.dart';
 import '../../../common/widgets/custom_button.dart';
@@ -15,13 +14,7 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: SafeArea(
         child: CustomButton(
           onPressed: () {
-            Navigator.pushReplacement(
-              context,
-              MaterialPageRoute(
-                builder: (context) => SecondScreen(),
-                settings: RouteSettings(name: AppRouter.second),
-              ),
-            );
+            Navigator.pushReplacementNamed(context, AppRouter.second);
           },
           child: Center(
             child: Text(

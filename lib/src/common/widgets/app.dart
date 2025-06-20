@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:udevs/src/common/style/app_theme.dart';
 import 'package:udevs/src/common/utils/extension/context_extension.dart';
-import 'package:udevs/src/features/home/screens/home_screen.dart';
+import 'package:udevs/src/features/video_player/bloc/video_player_bloc.dart';
+import 'package:udevs/src/features/video_player/screens/folders.dart';
 
 import '../l10n/generated/l10n.dart';
 
@@ -23,7 +25,14 @@ class App extends StatelessWidget {
       ],
       supportedLocales: const [Locale("en")],
       locale: Locale(context.dependency.locale),
-      home: HomeScreen(),
+      home: BlocProvider(
+        create: (context) {
+          return VideoPlayerBloc(
+            videoPlayerRepository: context.dependency.videoPlayerRepository,
+          )..add(GetVideoAll$VideoPlayerEvent(context: context));
+        },
+        child: Folders(),
+      ),
     );
   }
 }

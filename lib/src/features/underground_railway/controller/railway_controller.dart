@@ -1,11 +1,11 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:udevs/src/common/style/app_assets.dart';
-import 'package:udevs/src/features/underground_railway/screens/underground_railway.dart';
+import 'package:udevs/src/common/style/app_videos.dart';
+import 'package:udevs/src/features/underground_railway/screens/railway_screen.dart';
 import 'package:video_player/video_player.dart';
 
-mixin RailwayController on State<UndergroundRailway> {
+mixin RailwayController on State<UndergroundRailwayScreen> {
   List<String> mapRailwaysInFirst = [
     "Yangihayot",
     "Sergeli",
@@ -42,12 +42,6 @@ mixin RailwayController on State<UndergroundRailway> {
   void goTo(int index) async {
     if (isAnimation || isClickButton) return;
 
-    isClickButton = true;
-
-    Future.delayed(Duration(seconds: 6), () {
-      isClickButton = false;
-    });
-
     await videoAnimation(index);
 
     setState(() {
@@ -65,10 +59,15 @@ mixin RailwayController on State<UndergroundRailway> {
     if (station < index) {
       setState(() {
         isAnimation = true;
+        isClickButton = true;
       });
     }
 
-    if (isAnimation) {
+    if (isAnimation || isClickButton) {
+      Future.delayed(Duration(seconds: 6), () {
+        isClickButton = false;
+      });
+
       timer = Timer(Duration(seconds: 3), () {
         setState(() {
           isAnimation = false;
@@ -85,7 +84,7 @@ mixin RailwayController on State<UndergroundRailway> {
   void initState() {
     super.initState();
     videoPlayerController =
-        VideoPlayerController.asset(AppAssets.closingDoor)
+        VideoPlayerController.asset(AppVideos.closingDoor)
           ..setVolume(0)
           ..initialize().then((_) => setState(() {}));
     scrollController = ScrollController();

@@ -34,7 +34,19 @@ dependencies:
   flutter_tts: ^4.2.3
 
   # video
+  chewie: ^1.11.3
   video_player: ^2.10.0
+
+  # permission
+  permission_handler: ^12.0.0+1
+  path_provider: ^2.1.5
+
+  # image
+  flutter_svg: ^2.2.0
+
+  get_thumbnail_video: ^0.7.3
+  # storage
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
@@ -53,6 +65,8 @@ flutter:
 
   assets:
     - assets/video/closing_door.mp4
+    - assets/icons/folder_icon.svg
+    - assets/icons/video_icon.svg
   # To add assets to your application, add an assets section, like this:
   # assets:
   #   - images/a_dot_burr.jpeg

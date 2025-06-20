@@ -5,5 +5,7 @@
   "gemini_message": "What can I help with?",
   "ask_anything": "Ask anything",
   "gemini": "Gemini",
-  "you": "You"
+  "you": "You",
+  "video_player": "Video Player",
+  "folders": "Folders"
 }
