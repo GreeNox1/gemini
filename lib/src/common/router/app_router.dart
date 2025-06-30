@@ -2,11 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../features/gemini_ai/bloc/gemini_ai_bloc.dart';
-import '../../features/gemini_ai/screen/gemini_ai_screen.dart';
-import '../../features/home/screens/home_screen.dart';
-import '../../features/home/screens/second_screen.dart';
-import '../../features/underground_railway/screens/railway_screen.dart';
 import '../../features/video_player/bloc/video_player_bloc.dart';
 import '../../features/video_player/model/video_model.dart';
 import '../../features/video_player/screens/folders.dart';
@@ -105,65 +100,6 @@ final router = GoRouter(
         return CustomTransitionPage(
           key: state.pageKey,
           child: PlayVideo(video: state.extra as VideoDataModel),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: AppRouter.geminiAi,
-      name: AppRouter.geminiAi,
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: BlocProvider(
-            create: (BuildContext context) {
-              return GeminiAiBloc(
-                homeRepository: context.dependency.geminiAiRepository,
-              );
-            },
-            child: const GeminiAiScreen(),
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: AppRouter.home,
-      name: AppRouter.home,
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: HomeScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: AppRouter.second,
-      name: AppRouter.second,
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: SecondScreen(),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            return FadeTransition(opacity: animation, child: child);
-          },
-        );
-      },
-    ),
-    GoRoute(
-      path: AppRouter.undergroundRailway,
-      name: AppRouter.undergroundRailway,
-      pageBuilder: (context, state) {
-        return CustomTransitionPage(
-          key: state.pageKey,
-          child: UndergroundRailwayScreen(),
           transitionsBuilder: (context, animation, secondaryAnimation, child) {
             return FadeTransition(opacity: animation, child: child);
           },

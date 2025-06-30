@@ -463,9 +463,7 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
   ) {
     emit(state.copyWith(status: Status.loading));
 
-    if (_isPause) {
-      _isPause = !_isPause;
-    }
+    _isPause = !_isPause;
 
     _videoPlayerRepository.cancelVideoHls();
     _videoPlayerRepository.cancelVideoMp4();
