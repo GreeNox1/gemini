@@ -145,7 +145,7 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
       emit(state.copyWith(status: Status.success, videos: videos));
     } catch (e) {
       emit(state.copyWith(status: Status.error, videos: []));
-      debugPrint("GetVideoAll Error: $e");
+      debugPrint("GetVideoAllBloc(error: $e)");
     }
   }
 
