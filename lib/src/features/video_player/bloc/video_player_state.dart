@@ -8,22 +8,25 @@ class VideoPlayerState extends Equatable {
     this.download = Download.start,
     this.videoIndex = -1,
     this.isDownload = true,
+    this.checkPermission = false,
   });
 
   final Status status;
   final List<VideoModel> videos;
-  final int progress;
+  final double progress;
   final Download download;
   final int videoIndex;
   final bool isDownload;
+  final bool checkPermission;
 
   VideoPlayerState copyWith({
     Status? status,
     List<VideoModel>? videos,
-    int? progress,
+    double? progress,
     Download? download,
     int? videoIndex,
     bool? isDownload,
+    bool? checkPermission,
   }) {
     return VideoPlayerState(
       status: status ?? this.status,
@@ -32,6 +35,7 @@ class VideoPlayerState extends Equatable {
       download: download ?? this.download,
       videoIndex: videoIndex ?? this.videoIndex,
       isDownload: isDownload ?? this.isDownload,
+      checkPermission: checkPermission ?? this.checkPermission,
     );
   }
 
@@ -43,5 +47,6 @@ class VideoPlayerState extends Equatable {
     download,
     videoIndex,
     isDownload,
+    checkPermission,
   ];
 }

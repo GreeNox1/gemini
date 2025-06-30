@@ -13,9 +13,6 @@ class AppConstants {
 
   static const List<String> movies = [
     "https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/dash/SintelVideo.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/dash/TearsOfSteelVideo.mp4",
-    "https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/hls/Sintel.m3u8",
     "https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8",
   ];
 

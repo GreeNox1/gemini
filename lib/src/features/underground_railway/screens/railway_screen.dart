@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:udevs/src/common/style/app_size.dart';
-import 'package:udevs/src/common/utils/extension/context_extension.dart';
-import 'package:udevs/src/features/underground_railway/controller/railway_controller.dart';
-import 'package:udevs/src/features/underground_railway/widgets/railway_button.dart';
 import 'package:video_player/video_player.dart';
+
+import '../../../common/style/app_size.dart';
+import '../../../common/utils/extension/context_extension.dart';
+import '../controller/railway_controller.dart';
+import '../widgets/railway_button.dart';
 
 class UndergroundRailwayScreen extends StatefulWidget {
   const UndergroundRailwayScreen({super.key});

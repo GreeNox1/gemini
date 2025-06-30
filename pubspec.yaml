@@ -48,6 +48,9 @@ dependencies:
   # storage
   shared_preferences: ^2.5.3
 
+  go_router: ^15.2.3
+  ffmpeg_kit_flutter_new: ^2.0.0
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

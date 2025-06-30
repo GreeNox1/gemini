@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:udevs/src/common/utils/extension/context_extension.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../common/router/app_router.dart';
+import '../../../common/utils/extension/context_extension.dart';
 import '../../../common/widgets/custom_button.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -14,7 +15,7 @@ class HomeScreen extends StatelessWidget {
       bottomNavigationBar: SafeArea(
         child: CustomButton(
           onPressed: () {
-            Navigator.pushReplacementNamed(context, AppRouter.second);
+            context.go(AppRouter.second);
           },
           child: Center(
             child: Text(

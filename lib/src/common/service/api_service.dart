@@ -1,7 +1,8 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:dio/dio.dart';
-import 'package:udevs/src/common/utils/exception/api_error.dart';
-import 'package:udevs/src/common/utils/exception/no_connection.dart';
+
+import '../utils/exception/api_error.dart';
+import '../utils/exception/no_connection.dart';
 
 enum Method { get, post, put, delete }
 

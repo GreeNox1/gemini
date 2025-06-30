@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_tts/flutter_tts.dart';
-import 'package:udevs/src/common/style/app_size.dart';
-import 'package:udevs/src/common/utils/extension/context_extension.dart';
-import 'package:udevs/src/features/gemini_ai/bloc/gemini_ai_bloc.dart';
+
+import '../../../common/style/app_size.dart';
+import '../../../common/utils/extension/context_extension.dart';
+import '../bloc/gemini_ai_bloc.dart';
 
 class MessageBox extends StatelessWidget {
   const MessageBox({

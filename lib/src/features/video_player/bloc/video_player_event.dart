@@ -4,6 +4,12 @@ sealed class VideoPlayerEvent {
   const VideoPlayerEvent();
 }
 
+class CheckPermission$VideoPlayerEvent extends VideoPlayerEvent {
+  const CheckPermission$VideoPlayerEvent({required this.context});
+
+  final BuildContext context;
+}
+
 class GetVideoAll$VideoPlayerEvent extends VideoPlayerEvent {
   const GetVideoAll$VideoPlayerEvent({required this.context});
 
@@ -35,7 +41,7 @@ class DownloadVideoInProgress$VideoPlayerEvent extends VideoPlayerEvent {
   });
 
   final BuildContext context;
-  final int percent;
+  final double percent;
 }
 
 class DeleteVideo$VideoPlayerEvent extends VideoPlayerEvent {

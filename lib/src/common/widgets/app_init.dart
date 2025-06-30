@@ -3,11 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:udevs/src/common/constants/constants.dart';
-import 'package:udevs/src/common/dependency/app_dependencies.dart';
-import 'package:udevs/src/common/service/api_service.dart';
-import 'package:udevs/src/features/gemini_ai/data/gemini_ai_repository.dart';
-import 'package:udevs/src/features/video_player/data/video_player_repository.dart';
+
+import '../../features/gemini_ai/data/gemini_ai_repository.dart';
+import '../../features/video_player/data/video_player_repository.dart';
+import '../constants/constants.dart';
+import '../dependency/app_dependencies.dart';
+import '../service/api_service.dart';
 
 class InitializeApp {
   const InitializeApp._();

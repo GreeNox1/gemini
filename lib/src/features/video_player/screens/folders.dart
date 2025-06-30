@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:udevs/src/common/style/app_icons.dart';
-import 'package:udevs/src/common/utils/extension/context_extension.dart';
-import 'package:udevs/src/features/video_player/bloc/video_player_bloc.dart';
-import 'package:udevs/src/features/video_player/controller/folders_controller.dart';
-import 'package:udevs/src/features/video_player/screens/video_list.dart';
+import 'package:go_router/go_router.dart';
+
+import '../../../common/router/app_router.dart';
+import '../../../common/style/app_icons.dart';
+import '../../../common/utils/extension/context_extension.dart';
+import '../bloc/video_player_bloc.dart';
+import '../controller/folders_controller.dart';
 
 class Folders extends StatefulWidget {
   const Folders({super.key});
@@ -61,23 +63,13 @@ class _FoldersState extends State<Folders> with FoldersController {
                           fit: BoxFit.cover,
                         ),
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) {
-                                return BlocProvider(
-                                  create: (context) {
-                                    return VideoPlayerBloc(
-                                      videoPlayerRepository:
-                                          context
-                                              .dependency
-                                              .videoPlayerRepository,
-                                    );
-                                  },
-                                  child: VideoList(videoModel: state.videos[i]),
-                                );
-                              },
-                            ),
+                          context.go(
+                            AppRouter.videoListVideoPlayer,
+                            extra: {
+                              "title": state.videos[i].fileName.split("/").last,
+                              "id": i,
+                              "videos": state.videos[i],
+                            },
                           );
                         },
                       ),

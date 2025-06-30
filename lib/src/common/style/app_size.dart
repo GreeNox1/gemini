@@ -12,6 +12,8 @@ class AppSize {
 
   static const EdgeInsets paddingV10 = EdgeInsets.symmetric(vertical: 10);
 
+  static const EdgeInsets paddingH20 = EdgeInsets.symmetric(horizontal: 20);
+
   static const EdgeInsets paddingV15H10 = EdgeInsets.symmetric(
     vertical: 15,
     horizontal: 10,

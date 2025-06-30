@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:udevs/src/common/utils/extension/context_extension.dart';
-import 'package:udevs/src/features/gemini_ai/bloc/gemini_ai_bloc.dart';
-import 'package:udevs/src/features/gemini_ai/controller/gemini_ai_controller.dart';
 
 import '../../../common/style/app_size.dart';
 import '../../../common/utils/enums/status.dart';
+import '../../../common/utils/extension/context_extension.dart';
+import '../bloc/gemini_ai_bloc.dart';
+import '../controller/gemini_ai_controller.dart';
 import '../widgets/message_box.dart';
 
 class GeminiAiScreen extends StatefulWidget {

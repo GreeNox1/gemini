@@ -1,9 +1,10 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
-import 'package:udevs/src/common/style/app_videos.dart';
-import 'package:udevs/src/features/underground_railway/screens/railway_screen.dart';
 import 'package:video_player/video_player.dart';
+
+import '../../../common/style/app_videos.dart';
+import '../screens/railway_screen.dart';
 
 mixin RailwayController on State<UndergroundRailwayScreen> {
   List<String> mapRailwaysInFirst = [

@@ -1,6 +1,6 @@
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:udevs/src/features/gemini_ai/data/gemini_ai_repository.dart';
 
+import '../../features/gemini_ai/data/gemini_ai_repository.dart';
 import '../../features/video_player/data/video_player_repository.dart';
 
 class AppDependencies {

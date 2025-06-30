@@ -2,18 +2,23 @@ import 'dart:io';
 
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
+import 'package:ffmpeg_kit_flutter_new/ffprobe_kit.dart';
 import 'package:flutter/material.dart';
 import 'package:get_thumbnail_video/index.dart';
 import 'package:get_thumbnail_video/video_thumbnail.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:udevs/src/common/constants/constants.dart';
-import 'package:udevs/src/common/utils/enums/download.dart';
-import 'package:udevs/src/common/utils/enums/status.dart';
-import 'package:udevs/src/common/utils/extension/context_extension.dart';
-import 'package:udevs/src/features/video_player/model/video_model.dart';
 import 'package:video_player/video_player.dart';
 
+import '../../../common/constants/constants.dart';
+import '../../../common/router/app_router.dart';
+import '../../../common/style/app_size.dart';
+import '../../../common/utils/enums/download.dart';
+import '../../../common/utils/enums/status.dart';
+import '../../../common/utils/extension/context_extension.dart';
 import '../data/video_player_repository.dart';
+import '../model/video_model.dart';
 
 part 'video_player_event.dart';
 part 'video_player_state.dart';
@@ -24,6 +29,7 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
       super(const VideoPlayerState()) {
     on<VideoPlayerEvent>(
       (event, emit) => switch (event) {
+        CheckPermission$VideoPlayerEvent _ => _checkPermission(event, emit),
         GetVideoAll$VideoPlayerEvent _ => _getVideoAll(event, emit),
         UpdateVideo$VideoPlayerEvent _ => _updateVideo(event, emit),
         DownloadVideo$VideoPlayerEvent _ => _downloadVideo(event, emit),
@@ -41,10 +47,34 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
     '.mkv',
     '.avi',
     '.webm',
+    '.mov',
+    '.flv',
     '.m3u8',
   ];
 
-  bool _isPause = false;
+  bool _isPause = true;
+
+  Future<void> _checkPermission(
+    CheckPermission$VideoPlayerEvent event,
+    Emitter<VideoPlayerState> emit,
+  ) async {
+    emit(state.copyWith(status: Status.loading));
+
+    final responseMediaLibrary = await Permission.mediaLibrary.request();
+    final responseExternalStorage =
+        await Permission.manageExternalStorage.request();
+
+    debugPrint("Media Library: ${responseMediaLibrary.isGranted}");
+    debugPrint(
+      "Response External storage: ${responseExternalStorage.isGranted}",
+    );
+
+    if (responseExternalStorage.isGranted) {
+      emit(state.copyWith(status: Status.success, checkPermission: true));
+    } else {
+      emit(state.copyWith(status: Status.error));
+    }
+  }
 
   // GetVideoAll$VideoPlayerEvent
 
@@ -104,6 +134,8 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
 
       final onlineVideos = await _fetchOnlineVideos(thumbnailPath);
       if (onlineVideos != null) videos.add(onlineVideos);
+
+      debugPrint(onlineVideos.toString());
 
       await event.context.dependency.shp.setString(
         AppConstants.videoStorage,
@@ -167,7 +199,7 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
       emit(state.copyWith(status: Status.success, videos: updatedVideos));
     } catch (e) {
       emit(state.copyWith(status: Status.error, videos: []));
-      debugPrint("UpdateVideo Error: $e");
+      debugPrint("UpdateVideoBloc(error: $e)");
     }
   }
 
@@ -177,6 +209,17 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
     DownloadVideo$VideoPlayerEvent event,
     Emitter<VideoPlayerState> emit,
   ) async {
+    if (Download.progress == state.download) {
+      if (event.context.mounted) {
+        _showSnackBar("Video yuklanmoqda", event.context);
+      }
+      return;
+    }
+
+    debugPrint("Is pause: $_isPause");
+
+    _isPause = !_isPause;
+
     emit(
       state.copyWith(
         status: Status.loading,
@@ -185,7 +228,10 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
         isDownload: _isPause,
       ),
     );
+
     try {
+      final videos = [...state.videos];
+
       String? appDirectory = event.context.dependency.shp.getString(
         AppConstants.appDirectoryStorage,
       );
@@ -194,42 +240,97 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
         final baseDir = Directory(
           Platform.isAndroid ? "/storage/emulated/0" : "/",
         );
+
         if (!await Permission.manageExternalStorage.isGranted) {
           debugPrint("Fayl ochishga ruhsat berilmadi!");
           return;
         }
-        String? appDirectory = event.context.dependency.shp.getString(
+
+        appDirectory = await _createDirectory(baseDir);
+
+        await event.context.dependency.shp.setString(
           AppConstants.appDirectoryStorage,
+          appDirectory,
+        );
+      }
+
+      String result = "";
+      String saveUrl = "$appDirectory/Sintel.mp4";
+
+      if (!event.url.endsWith(".m3u8")) {
+        result = await _videoPlayerRepository.startDownload(
+          url: event.url,
+          saveUrl: appDirectory,
+          onProgress: (progress) {
+            add(
+              DownloadVideoInProgress$VideoPlayerEvent(
+                context: event.context,
+                percent: progress,
+              ),
+            );
+          },
         );
 
-        if (appDirectory == null) {
-          appDirectory = await _createDirectory(baseDir);
-
-          await event.context.dependency.shp.setString(
-            AppConstants.appDirectoryStorage,
-            appDirectory,
+        if (result.isEmpty) {
+          debugPrint("Yuklab olishda xatolik!");
+          emit(state.copyWith(status: Status.error));
+          return;
+        }
+      } else {
+        if (event.context.mounted) {
+          _showDialog(
+            "Bu videoni yuklayotgan paytingizda bu ekrandan chiqib ketsangiz "
+            "yoki videoni pause qilsangiz, video yuklab olishdan to'xtatiladi."
+            "\nNoqulaylik uchun uzur",
+            event.context,
           );
+        }
+        result = await _videoPlayerRepository.downloadHls(
+          url: event.url,
+          saveUrl: saveUrl,
+          onProgress: (progress) {
+            add(
+              DownloadVideoInProgress$VideoPlayerEvent(
+                context: event.context,
+                percent: progress,
+              ),
+            );
+          },
+          fileDuration:
+              File(saveUrl).existsSync()
+                  ? await _getDuration(File(saveUrl))
+                  : null,
+        );
+        if (result.isEmpty) {
+          debugPrint("Yuklab olishda xatolik!");
+          emit(state.copyWith(status: Status.error));
+          return;
         }
       }
 
-      final result = await _videoPlayerRepository.download(
-        url: event.url,
-        saveUrl: appDirectory!,
-        onProgress: (progress) {
-          add(
-            DownloadVideoInProgress$VideoPlayerEvent(
-              context: event.context,
-              percent: progress,
-            ),
-          );
-        },
-        onPause: () async {
-          return _isPause;
-        },
-      );
-      if (result.isEmpty) {
-        debugPrint("Yuklab olishda xatolik!");
-        emit(state.copyWith(status: Status.error));
+      if (event.context.mounted) {
+        if (result == "failed") {
+          _showSnackBar("Video yuklab olishda hatolik", event.context);
+        } else if (result == "cancel") {
+          _showSnackBar("Video yuklab olish to'xtatildi", event.context);
+        } else if (result.isNotEmpty) {
+          _showSnackBar("Video to'liq yuklab olindi", event.context);
+        }
+      }
+
+      if (result == "success" && event.context.mounted) {
+        _isPause = true;
+
+        _showSnackBar("Video to'liq yuklab olingan", event.context);
+
+        emit(
+          state.copyWith(
+            status: Status.success,
+            videoIndex: -1,
+            download: Download.start,
+            isDownload: _isPause,
+          ),
+        );
         return;
       }
 
@@ -240,49 +341,55 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
         maxHeight: 150,
         quality: 100,
       );
-      final controller = VideoPlayerController.file(file);
-      await controller.initialize();
 
-      final downloaded = VideoDataModel(
-        text: file.path,
-        uint8list: uint8list,
-        duration: controller.value.duration,
-      );
-      controller.dispose();
+      try {
+        Duration duration = await _getDuration(file) ?? Duration();
 
-      final videos = [...state.videos];
-      final index = videos.indexWhere((e) => e.fileName == "Video player");
+        final downloaded = VideoDataModel(
+          text: file.path,
+          uint8list: uint8list,
+          duration: duration,
+        );
 
-      if (index != -1) {
-        videos[index].videos.add(downloaded);
-      } else {
-        videos.add(VideoModel(fileName: "Video player", videos: [downloaded]));
-      }
+        final index = videos.indexWhere((e) => e.fileName == "Video player");
 
-      await event.context.dependency.shp.setString(
-        AppConstants.videoStorage,
-        toJsonVideoModel(videos),
-      );
+        if (index != -1) {
+          videos[index].videos.add(downloaded);
+        } else {
+          videos.add(
+            VideoModel(fileName: "Video player", videos: [downloaded]),
+          );
+        }
 
-      if (event.context.mounted) {
-        add(UpdateVideo$VideoPlayerEvent(context: event.context));
-      }
+        await event.context.dependency.shp.setString(
+          AppConstants.videoStorage,
+          toJsonVideoModel(videos),
+        );
 
-      emit(
-        state.copyWith(
-          status: Status.success,
-          videos: videos,
-          videoIndex: -1,
-          download: Download.start,
-        ),
-      );
+        if (event.context.mounted) {
+          add(UpdateVideo$VideoPlayerEvent(context: event.context));
+        }
+
+        emit(
+          state.copyWith(
+            status: Status.success,
+            videos: videos,
+            videoIndex: -1,
+            download: Download.start,
+          ),
+        );
+      } on Object catch (_) {}
     } catch (e) {
-      debugPrint("DownloadVideo Error: $e");
+      debugPrint("DownloadVideoBloc(error: $e)");
+
+      _isPause = !_isPause;
+
       emit(
         state.copyWith(
           status: Status.error,
           videoIndex: -1,
           download: Download.start,
+          isDownload: _isPause,
         ),
       );
     }
@@ -297,52 +404,71 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
     emit(state.copyWith(status: Status.loading));
 
     try {
-      File file = File(event.path);
-      await file.delete();
+      final file = File(event.path);
+      if (await file.exists()) {
+        await file.delete();
+      }
 
       final dataAsString = event.context.dependency.shp.getString(
         AppConstants.videoStorage,
       );
+
       if (dataAsString != null) {
         final cachedVideos = fromJsonVideoModel(dataAsString);
 
         for (int i = 0; i < cachedVideos.length; i++) {
-          if (event.path.contains(cachedVideos[i].fileName)) {
-            for (int j = 0; j < cachedVideos[i].videos.length; j++) {
-              if (event.path.contains(cachedVideos[i].videos[j].text)) {
-                cachedVideos[i].videos.removeAt(j);
-                await event.context.dependency.shp.setString(
-                  AppConstants.videoStorage,
-                  toJsonVideoModel(cachedVideos),
-                );
-                emit(
-                  state.copyWith(status: Status.success, videos: cachedVideos),
-                );
-                return;
+          final model = cachedVideos[i];
+          final indexToRemove = model.videos.indexWhere(
+            (element) => element.text == event.path,
+          );
+          if (indexToRemove != -1) {
+            model.videos.removeAt(indexToRemove);
+            if (model.videos.isEmpty) {
+              cachedVideos.removeAt(i);
+              if (event.context.mounted) {
+                event.context.go(AppRouter.foldersVideoPlayer);
               }
             }
+            await event.context.dependency.shp.setString(
+              AppConstants.videoStorage,
+              toJsonVideoModel(cachedVideos),
+            );
+            break;
           }
         }
 
-        emit(state.copyWith(status: Status.success, videos: cachedVideos));
-      }
+        if (event.context.mounted) {
+          add(UpdateVideo$VideoPlayerEvent(context: event.context));
+        }
 
-      emit(state.copyWith(status: Status.success));
-    } on Exception catch (e) {
-      debugPrint("Delete video: $e");
+        if (event.context.mounted) {
+          _showSnackBar("Video o'chirildi", event.context);
+        }
+
+        emit(state.copyWith(status: Status.success, videos: cachedVideos));
+      } else {
+        emit(state.copyWith(status: Status.success));
+      }
+    } catch (e) {
+      debugPrint("DeleteVideoBloc(error: $e)");
       emit(state.copyWith(status: Status.error));
     }
   }
 
   // PauseVideo$VideoPlayerEvent
 
-  Future<void> _pauseVideo(
+  void _pauseVideo(
     PauseVideo$VideoPlayerEvent event,
     Emitter<VideoPlayerState> emit,
-  ) async {
-    emit(state.copyWith(status: Status.loading, download: Download.progress));
+  ) {
+    emit(state.copyWith(status: Status.loading));
 
-    _isPause = !_isPause;
+    if (_isPause) {
+      _isPause = !_isPause;
+    }
+
+    _videoPlayerRepository.cancelVideoHls();
+    _videoPlayerRepository.cancelVideoMp4();
 
     emit(
       state.copyWith(
@@ -355,10 +481,10 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
 
   // DownloadVideoInProgress$VideoPlayerEvent
 
-  Future<void> _progress(
+  void _progress(
     DownloadVideoInProgress$VideoPlayerEvent event,
     Emitter<VideoPlayerState> emit,
-  ) async {
+  ) {
     emit(state.copyWith(status: Status.loading));
 
     if (state.progress < event.percent) {
@@ -371,16 +497,17 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
     emit(state.copyWith(status: Status.success));
   }
 
+  // --------- Functions ---------
+
   Future<List<VideoModel>> _scanVideos(Directory baseDirectory) async {
     final videos = <VideoModel>[];
     final videoNames = <VideoDataModel>[];
 
     for (final entity in baseDirectory.listSync()) {
-      print("Path: ${entity.path}");
       if (_isValidVideoFile(entity.path)) {
         final videoData = await _generateVideoData(File(entity.path));
         if (videoData != null) videoNames.add(videoData);
-      } else if (_isValidNonEmptyDirectory(entity.path)) {
+      } else if (_hasAllowedFolderWithVideos(entity.path)) {
         videos.addAll(await _readFile(entity.path));
       }
     }
@@ -395,26 +522,30 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
   Future<VideoModel?> _fetchOnlineVideos(String thumbnailPath) async {
     final videoNames = <VideoDataModel>[];
     for (final url in AppConstants.movies) {
-      if (url.endsWith(".m3u8")) continue;
-      final file = await VideoThumbnail.thumbnailFile(
-        video: url,
-        thumbnailPath: thumbnailPath,
-        imageFormat: ImageFormat.WEBP,
-        timeMs: 10000,
-        maxHeight: 150,
-        quality: 100,
-      );
-      final controller = VideoPlayerController.networkUrl(Uri.parse(url));
-      await controller.initialize();
+      final session = await FFprobeKit.getMediaInformation(url);
+      final info = session.getMediaInformation();
+
+      final imagePath =
+          "$thumbnailPath/${url.split("/").last.replaceAll(url.split(".").last, "jpeg")}";
+
+      final command =
+          '-y -ss 00:00:10 -i "$url" -vframes 1 -q:v 2 -vf "scale=-1:720" "$imagePath"';
+
+      await FFmpegKit.execute(command);
+
+      double time = double.parse(info?.getDuration() ?? "0");
+
       videoNames.add(
         VideoDataModel(
           urlVideo: url,
-          text: url,
-          uint8list: await file.readAsBytes(),
-          duration: controller.value.duration,
+          text: url.replaceAll("playlist.m3u8", "Sintel.mp4"),
+          uint8list: File(imagePath).readAsBytesSync(),
+          duration: Duration(
+            minutes: time ~/ 60,
+            seconds: ((time / 60 - time ~/ 60) * 60).floor(),
+          ),
         ),
       );
-      controller.dispose();
     }
     if (videoNames.isNotEmpty) {
       return VideoModel(fileName: "Online videos", videos: videoNames);
@@ -424,6 +555,9 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
 
   Future<VideoDataModel?> _generateVideoData(File file) async {
     try {
+      final session = await FFprobeKit.getMediaInformation(file.path);
+      final info = session.getMediaInformation();
+
       final uint8list = await VideoThumbnail.thumbnailData(
         video: file.path,
         imageFormat: ImageFormat.JPEG,
@@ -431,14 +565,17 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
         maxHeight: 150,
         quality: 100,
       );
-      final controller = VideoPlayerController.file(file);
-      await controller.initialize();
+
+      double time = double.parse(info?.getDuration() ?? "0");
+
       final data = VideoDataModel(
         text: file.path,
         uint8list: uint8list,
-        duration: controller.value.duration,
+        duration: Duration(
+          minutes: time ~/ 60,
+          seconds: ((time / 60 - time ~/ 60) * 60).floor(),
+        ),
       );
-      controller.dispose();
       return data;
     } catch (_) {
       return null;
@@ -451,8 +588,8 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
     );
   }
 
-  bool _isValidNonEmptyDirectory(String path) {
-    final notIgnored = {
+  bool _hasAllowedFolderWithVideos(String path) {
+    final allowedFolders = {
       "Video player",
       "Download",
       "Telegram Video",
@@ -460,12 +597,29 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
       "Pictures",
       "Movies",
     };
-    final name = path.split('/').last;
-    if (name.startsWith('.') || !notIgnored.contains(name)) return false;
+
+    final folderName = path.split('/').last;
+
+    if (folderName.startsWith('.') || !allowedFolders.contains(folderName)) {
+      return false;
+    }
+
     final type = FileSystemEntity.typeSync(path);
     if (type != FileSystemEntityType.directory) return false;
+
     try {
-      return Directory(path).listSync().isNotEmpty;
+      final files = Directory(path).listSync();
+
+      for (var file in files) {
+        if (file is File) {
+          final ext = file.path.toLowerCase();
+          if (_videoExtensions.any((element) => ext.endsWith(element))) {
+            return true;
+          }
+        }
+      }
+
+      return false;
     } catch (_) {
       return false;
     }
@@ -480,7 +634,7 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
         if (_isValidVideoFile(entity.path)) {
           final videoData = await _generateVideoData(File(entity.path));
           if (videoData != null) videoNames.add(videoData);
-        } else if (_isValidNonEmptyDirectory(entity.path)) {
+        } else if (_hasAllowedFolderWithVideos(entity.path)) {
           videos.addAll(await _readFile(entity.path));
         }
       }
@@ -503,5 +657,77 @@ class VideoPlayerBloc extends Bloc<VideoPlayerEvent, VideoPlayerState> {
   Future<String> _createDirectoryForThumbnails(String path) async {
     final newDir = Directory("$path/Thumbnails");
     return (await newDir.create()).path;
+  }
+
+  Future<Duration?> _getDuration(File file) async {
+    final controller = VideoPlayerController.file(file);
+
+    try {
+      await controller.initialize();
+
+      return controller.value.duration;
+    } on Object catch (e) {
+      debugPrint("GetDuration(error: $e)");
+      return null;
+    } finally {
+      await controller.dispose();
+    }
+  }
+
+  void _showSnackBar(String title, BuildContext context) {
+    ScaffoldMessenger.of(context)
+      ..clearSnackBars()
+      ..showSnackBar(
+        SnackBar(
+          behavior: SnackBarBehavior.floating,
+          shape: RoundedRectangleBorder(
+            borderRadius: AppSize.borderRadiusAll15,
+          ),
+          content: Text(
+            title,
+            style: context.textTheme.bodyLarge?.copyWith(
+              color: context.colors.primary,
+            ),
+          ),
+        ),
+      );
+  }
+
+  void _showDialog(String title, BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return PopScope(
+          canPop: false,
+          child: AlertDialog(
+            title: Text(
+              "Info",
+              style: context.textTheme.headlineSmall?.copyWith(
+                color: context.colors.onPrimaryFixed,
+              ),
+            ),
+            content: Text(
+              title,
+              style: context.textTheme.bodyLarge?.copyWith(
+                color: context.colors.onPrimaryFixed,
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  context.pop();
+                },
+                child: Text(
+                  "Close",
+                  style: context.textTheme.bodyLarge?.copyWith(
+                    color: context.colors.onPrimaryFixed,
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

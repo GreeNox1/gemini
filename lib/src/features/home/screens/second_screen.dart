@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:udevs/src/common/utils/extension/context_extension.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../common/router/app_router.dart';
+import '../../../common/utils/extension/context_extension.dart';
 import '../../../common/widgets/custom_button.dart';
 
 class SecondScreen extends StatelessWidget {
@@ -23,10 +24,7 @@ class SecondScreen extends StatelessWidget {
                   Expanded(
                     child: CustomButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          AppRouter.undergroundRailway,
-                        );
+                        context.go(AppRouter.undergroundRailway);
                       },
                       child: Center(
                         child: Text(
@@ -50,7 +48,7 @@ class SecondScreen extends StatelessWidget {
                   Expanded(
                     child: CustomButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(context, AppRouter.home);
+                        context.go(AppRouter.home);
                       },
                       child: Center(
                         child: Text(
@@ -66,10 +64,7 @@ class SecondScreen extends StatelessWidget {
                   Expanded(
                     child: CustomButton(
                       onPressed: () {
-                        Navigator.pushReplacementNamed(
-                          context,
-                          AppRouter.geminiAi,
-                        );
+                        context.go(AppRouter.geminiAi);
                       },
                       child: Center(
                         child: Text(

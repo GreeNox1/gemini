@@ -14,24 +14,22 @@ mixin PlayVideoController on State<PlayVideo> {
   void _initVideoPlayer() async {
     if (widget.video.urlVideo == null) {
       controller = VideoPlayerController.file(File(widget.video.text));
-      controller.initialize().then((_) => setState(() {}));
+      controller.initialize().then((value) => setState(() {}));
     } else {
       controller = VideoPlayerController.networkUrl(
         Uri.parse(widget.video.urlVideo ?? ""),
       );
-      controller.initialize().then((_) => setState(() {}));
+      controller.initialize().then((value) => setState(() {}));
     }
 
     chewieController = ChewieController(
       videoPlayerController: controller,
-      autoInitialize: true,
       autoPlay: true,
       looping: true,
-      progressIndicatorDelay:
-          bufferDelay != null ? Duration(milliseconds: bufferDelay!) : null,
     );
 
-    // controller.play();
+    chewieController.setVolume(1);
+    chewieController.play();
   }
 
   @override
@@ -42,7 +40,10 @@ mixin PlayVideoController on State<PlayVideo> {
 
   @override
   void dispose() {
-    controller.dispose();
+    if (controller.value.isInitialized) {
+      controller.pause();
+      controller.dispose();
+    }
     chewieController.dispose();
     super.dispose();
   }

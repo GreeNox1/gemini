@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:udevs/src/common/dependency/app_dependencies.dart';
+
+import '../dependency/app_dependencies.dart';
 
 class AppScope extends StatefulWidget {
   const AppScope({super.key, required this.dependencies, required this.child});

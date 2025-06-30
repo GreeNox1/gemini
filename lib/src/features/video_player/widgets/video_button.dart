@@ -1,10 +1,10 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:udevs/src/common/style/app_size.dart';
-import 'package:udevs/src/common/utils/extension/context_extension.dart';
 
+import '../../../common/style/app_size.dart';
 import '../../../common/utils/enums/download.dart';
+import '../../../common/utils/extension/context_extension.dart';
 
 class VideoButton extends StatelessWidget {
   const VideoButton({
@@ -34,7 +34,7 @@ class VideoButton extends StatelessWidget {
   final String? videoUrl;
   final Download download;
   final bool isVideoDownload;
-  final int progress;
+  final double progress;
 
   @override
   Widget build(BuildContext context) {
@@ -109,6 +109,7 @@ class VideoButton extends StatelessWidget {
                                       ? Row(
                                         mainAxisAlignment:
                                             MainAxisAlignment.center,
+                                        mainAxisSize: MainAxisSize.min,
                                         spacing: 10,
                                         children: [
                                           Stack(
@@ -125,7 +126,7 @@ class VideoButton extends StatelessWidget {
                                             ],
                                           ),
                                           Text(
-                                            "$progress %",
+                                            "${progress.toStringAsFixed(1)} %",
                                             style: context.textTheme.bodyLarge
                                                 ?.copyWith(
                                                   color: context.colors.primary,
@@ -154,20 +155,14 @@ class VideoButton extends StatelessWidget {
                   ),
                 ),
               ),
-              if (videoUrl == null ||
-                  isVideoDownload ||
-                  download == Download.start)
+              if (isVideoDownload || download == Download.start)
                 PopupMenuButton<int>(
                   icon: const Icon(Icons.more_vert),
                   onSelected: (value) {
                     if (value == 1) {
                       onPressedPause();
                     } else if (value == 2) {
-                      if (download == Download.start) {
-                        onPressedDownload();
-                      } else {
-                        onPressedPause();
-                      }
+                      onPressedDownload();
                     } else if (value == 3) {
                       onPressedRemove();
                     }

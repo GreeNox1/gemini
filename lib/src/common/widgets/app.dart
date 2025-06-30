@@ -1,21 +1,18 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
-import 'package:udevs/src/common/style/app_theme.dart';
-import 'package:udevs/src/common/utils/extension/context_extension.dart';
-import 'package:udevs/src/features/video_player/bloc/video_player_bloc.dart';
-import 'package:udevs/src/features/video_player/screens/folders.dart';
 
 import '../l10n/generated/l10n.dart';
+import '../router/app_router.dart';
+import '../style/app_theme.dart';
+import '../utils/extension/context_extension.dart';
 
 class App extends StatelessWidget {
   const App({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      theme:
-          context.dependency.theme ? AppTheme.lightTheme : AppTheme.darkTheme,
+    return MaterialApp.router(
+      routerConfig: router,
       debugShowCheckedModeBanner: false,
       localizationsDelegates: const [
         S.delegate,
@@ -25,14 +22,8 @@ class App extends StatelessWidget {
       ],
       supportedLocales: const [Locale("en")],
       locale: Locale(context.dependency.locale),
-      home: BlocProvider(
-        create: (context) {
-          return VideoPlayerBloc(
-            videoPlayerRepository: context.dependency.videoPlayerRepository,
-          )..add(GetVideoAll$VideoPlayerEvent(context: context));
-        },
-        child: Folders(),
-      ),
+      theme:
+          context.dependency.theme ? AppTheme.lightTheme : AppTheme.darkTheme,
     );
   }
 }

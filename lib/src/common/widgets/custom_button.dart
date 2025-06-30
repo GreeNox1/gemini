@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:udevs/src/common/style/app_size.dart';
-import 'package:udevs/src/common/utils/extension/context_extension.dart';
+
+import '../style/app_size.dart';
+import '../utils/extension/context_extension.dart';
 
 class CustomButton extends StatefulWidget {
   const CustomButton({super.key, this.onPressed, required this.child});
@@ -18,7 +19,7 @@ class _CustomButtonState extends State<CustomButton> {
   void onChanged({bool newSelected = true}) {
     if (newSelected != isSelected) {
       setState(() {
-        print("Button changed: $isSelected");
+        debugPrint("Button changed: $isSelected");
         isSelected = !isSelected;
       });
     }

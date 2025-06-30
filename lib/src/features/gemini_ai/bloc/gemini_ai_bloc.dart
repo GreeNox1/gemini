@@ -1,8 +1,8 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/material.dart';
-import 'package:udevs/src/common/model/message_model.dart';
 
+import '../../../common/model/message_model.dart';
 import '../../../common/utils/enums/status.dart';
 import '../data/gemini_ai_repository.dart';
 
