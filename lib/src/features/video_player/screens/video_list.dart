@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../common/model/video_model.dart';
 import '../../../common/router/app_router.dart';
 import '../../../common/utils/extension/context_extension.dart';
 import '../bloc/video_player_bloc.dart';
 import '../controller/video_list_controller.dart';
-import '../model/video_model.dart';
 import '../widgets/video_button.dart';
 
 class VideoList extends StatefulWidget {

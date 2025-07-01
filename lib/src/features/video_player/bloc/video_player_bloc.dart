@@ -12,13 +12,13 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:video_player/video_player.dart';
 
 import '../../../common/constants/constants.dart';
+import '../../../common/model/video_model.dart';
 import '../../../common/router/app_router.dart';
 import '../../../common/style/app_size.dart';
 import '../../../common/utils/enums/download.dart';
 import '../../../common/utils/enums/status.dart';
 import '../../../common/utils/extension/context_extension.dart';
 import '../data/video_player_repository.dart';
-import '../model/video_model.dart';
 
 part 'video_player_event.dart';
 part 'video_player_state.dart';

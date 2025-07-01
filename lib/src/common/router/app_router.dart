@@ -3,11 +3,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../../features/video_player/bloc/video_player_bloc.dart';
-import '../../features/video_player/model/video_model.dart';
 import '../../features/video_player/screens/folders.dart';
 import '../../features/video_player/screens/permission.dart';
 import '../../features/video_player/screens/play_video.dart';
 import '../../features/video_player/screens/video_list.dart';
+import '../model/video_model.dart';
 import '../utils/extension/context_extension.dart';
 
 class AppRouter {

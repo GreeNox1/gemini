@@ -2,9 +2,9 @@ import 'package:chewie/chewie.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import '../../../common/model/video_model.dart';
 import '../../../common/router/app_router.dart';
 import '../controller/play_video_controller.dart';
-import '../model/video_model.dart';
 
 class PlayVideo extends StatefulWidget {
   const PlayVideo({super.key, required this.video});
