@@ -22,34 +22,34 @@ dependencies:
   connectivity_plus: ^6.1.4
 
   # ai
-  flutter_gemini: ^3.0.0
+  # flutter_gemini: ^3.0.0
 
   # bloc
-  bloc: ^9.0.0
-  equatable: ^2.0.7
-  flutter_bloc: ^9.1.1
-  provider: ^6.1.5
+  # bloc: ^9.0.0
+  # equatable: ^2.0.7
+  # flutter_bloc: ^9.1.1
+  # provider: ^6.1.5
 
   # text to voice
   flutter_tts: ^4.2.3
 
   # video
-  chewie: ^1.11.3
+  # chewie: ^1.11.3
   video_player: ^2.10.0
 
   # permission
-  permission_handler: ^12.0.0+1
-  path_provider: ^2.1.5
+  # permission_handler: ^12.0.0+1
+  # path_provider: ^2.1.5
 
   # image
   flutter_svg: ^2.2.0
 
-  get_thumbnail_video: ^0.7.3
+  # get_thumbnail_video: ^0.7.3
   # storage
   shared_preferences: ^2.5.3
 
   go_router: ^15.2.3
-  ffmpeg_kit_flutter_new: ^2.0.0
+  # ffmpeg_kit_flutter_new: ^2.0.0
 
 dev_dependencies:
   flutter_test:
