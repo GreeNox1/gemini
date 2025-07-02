@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../style/app_size.dart';
-import '../utils/extension/context_extension.dart';
+import '../../../common/style/app_size.dart';
+import '../../../common/utils/extension/context_extension.dart';
 
 class CustomButton extends StatefulWidget {
   const CustomButton({super.key, this.onPressed, required this.child});
