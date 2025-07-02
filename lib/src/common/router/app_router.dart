@@ -23,7 +23,7 @@ final navigatorKey = GlobalKey<NavigatorState>();
 
 final router = GoRouter(
   navigatorKey: navigatorKey,
-  initialLocation: AppRouter.permission,
+  initialLocation: AppRouter.geminiAi,
   routes: [
     GoRoute(
       path: AppRouter.geminiAi,
