@@ -5,7 +5,6 @@ import 'package:flutter_gemini/flutter_gemini.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../features/gemini_ai/data/gemini_ai_repository.dart';
-import '../../features/video_player/data/video_player_repository.dart';
 import '../constants/constants.dart';
 import '../dependency/app_dependencies.dart';
 import '../service/api_service.dart';
@@ -42,16 +41,12 @@ class InitializeApp {
     final IGeminiAiRepository geminiAiRepository = GeminiAiRepositoryImpl(
       apiService: apiService,
     );
-    final IVideoPlayerRepository videoPlayerRepository = VideoRepositoryImpl(
-      apiService: apiService,
-    );
 
     return AppDependencies(
       locale: locale,
       theme: theme,
       shp: shp,
       geminiAiRepository: geminiAiRepository,
-      videoPlayerRepository: videoPlayerRepository,
     );
   }
 }
